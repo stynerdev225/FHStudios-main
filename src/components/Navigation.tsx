@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { Menu, Instagram, Twitter, Youtube, Facebook, Music2 } from "lucide-react"
+import { Instagram, Twitter, Youtube, Facebook, Music2 } from "lucide-react"
 import { Link, useLocation } from "react-router-dom"
 import { UserMenu } from "./UserMenu"
 
@@ -89,17 +89,18 @@ export function Navigation() {
           {/* Mobile & Tablet Menu Button */}
           <div className="flex items-center gap-4 lg:hidden">
             <button
-              className="text-white px-4 py-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-red-500 flex items-center gap-2"
+              className="text-white hover:text-red-500 focus:outline-none"
               onClick={() => setIsOpen(!isOpen)}
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
               aria-label={isOpen ? "Close menu" : "Open menu"}
             >
-              {isOpen ? (
-                <span className="text-lg font-medium">Close</span>
-              ) : (
-                <Menu size={24} />
-              )}
+              {/* Simple hamburger icon that matches the screenshot */}
+              <div className="w-6 flex flex-col gap-1.5">
+                <span className="block h-0.5 w-6 bg-current"></span>
+                <span className="block h-0.5 w-6 bg-current"></span>
+                <span className="block h-0.5 w-6 bg-current"></span>
+              </div>
             </button>
           </div>
 
@@ -110,11 +111,10 @@ export function Navigation() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-white text-2xl font-bold hover:text-red-500 transition relative ${
-                  location.pathname === item.path
+                className={`text-white text-2xl font-bold hover:text-red-500 transition relative ${location.pathname === item.path
                     ? "text-red-500 after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[2px] after:bg-red-500"
                     : ""
-                } flex items-center gap-2`}
+                  } flex items-center gap-2`}
               >
                 {item.name}
               </Link>
@@ -135,7 +135,9 @@ export function Navigation() {
               ))}
             </div>
             {/* UserMenu with proper spacing */}
-            <div className="isolate ml-4 mr-8">  {/* Added ml-4 mr-8 */}
+            <div className="isolate ml-4 mr-8">
+              {" "}
+              {/* Added ml-4 mr-8 */}
               <UserMenu />
             </div>
           </div>
@@ -144,12 +146,12 @@ export function Navigation() {
         {/* Mobile & Tablet Menu Dropdown */}
         <div
           id="mobile-menu"
-          className={`lg:hidden fixed top-20 right-0 w-[280px] bg-black/95 border-l border-t border-white/20 transition-all duration-300 ${
-            isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
-          }`}
+          className={`lg:hidden fixed top-20 right-0 w-[280px] bg-black border-l border-t border-white/20 transition-all duration-300 ${isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
+            }`}
           style={{
             maxHeight: "calc(100vh - 5rem)",
-            overflowY: "auto"
+            overflowY: "auto",
+            boxShadow: isOpen ? "-4px 0 20px rgba(0, 0, 0, 0.5)" : "none",
           }}
           aria-hidden={!isOpen}
         >
@@ -160,16 +162,13 @@ export function Navigation() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block text-white text-xl font-bold px-6 py-4 hover:bg-white/10 ${
-                    location.pathname === item.path ? "bg-white/10 border-l-4 border-red-600" : ""
-                  }`}
+                  className={`block text-white text-xl font-bold px-6 py-4 hover:bg-white/10 ${location.pathname === item.path ? "bg-white/10 border-l-4 border-red-600" : ""
+                    }`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
                 </Link>
-                {index < navItems.length - 1 && (
-                  <div className="h-[1px] bg-white/20 w-full" />
-                )}
+                {index < navItems.length - 1 && <div className="h-[1px] bg-white/20 w-full" />}
               </>
             ))}
           </div>
@@ -179,9 +178,7 @@ export function Navigation() {
 
           {/* User Account Section */}
           <div className="px-6 py-4">
-            <div className="w-32">
-              <UserMenu />
-            </div>
+            <UserMenu />
           </div>
 
           {/* Thick Divider */}

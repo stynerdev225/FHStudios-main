@@ -69,33 +69,46 @@ export function Navigation() {
     setIsOpen(false)
   }, [location])
 
+  // Add effect to prevent body scrolling when menu is open
+  React.useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isOpen])
+
   return (
     <nav className="fixed w-full z-50 bg-black/50 backdrop-blur-lg">
-      <div className="max-w-[1920px] mx-auto px-8">
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo - removed excessive negative margin */}
-          <Link to="/" className="flex items-center gap-4 text-white group">
-            <div className="flex items-center gap-6">
-              <span className="text-[42px] text-red-600 group-hover:text-red-500 transition-colors">🎸</span>
+          {/* Logo */}
+          <Link to="/" className="flex items-center text-white group">
+            <div className="flex items-center">
+              <span className="text-[32px] sm:text-[42px] text-red-600 group-hover:text-red-500 transition-colors mr-2 sm:mr-4">
+                🎸
+              </span>
               <div className="flex items-baseline">
-                <span className="text-6xl font-black tracking-tighter text-red-600 group-hover:text-red-500 transition-colors">
+                <span className="text-4xl sm:text-6xl font-black tracking-tighter text-red-600 group-hover:text-red-500 transition-colors">
                   FH
                 </span>
-                <span className="text-4xl font-black tracking-widest ml-1">STUDIOS</span>
+                <span className="text-2xl sm:text-4xl font-black tracking-widest ml-1">STUDIOS</span>
               </div>
             </div>
           </Link>
 
-          {/* Mobile & Tablet Menu Button */}
-          <div className="flex items-center gap-4 lg:hidden">
+          {/* Mobile Menu Button */}
+          <div className="flex items-center lg:hidden">
             <button
-              className="text-white hover:text-red-500 focus:outline-none"
+              className="text-white hover:text-red-500 focus:outline-none p-2"
               onClick={() => setIsOpen(!isOpen)}
               aria-expanded={isOpen}
               aria-controls="mobile-menu"
               aria-label={isOpen ? "Close menu" : "Open menu"}
             >
-              {/* Simple hamburger icon that matches the screenshot */}
               <div className="w-6 flex flex-col gap-1.5">
                 <span className="block h-0.5 w-6 bg-current"></span>
                 <span className="block h-0.5 w-6 bg-current"></span>
@@ -111,10 +124,11 @@ export function Navigation() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`text-white text-2xl font-bold hover:text-red-500 transition relative ${location.pathname === item.path
+                className={`text-white text-2xl font-bold hover:text-red-500 transition relative ${
+                  location.pathname === item.path
                     ? "text-red-500 after:absolute after:bottom-[-8px] after:left-0 after:w-full after:h-[2px] after:bg-red-500"
                     : ""
-                  } flex items-center gap-2`}
+                }`}
               >
                 {item.name}
               </Link>
@@ -134,20 +148,18 @@ export function Navigation() {
                 </a>
               ))}
             </div>
-            {/* UserMenu with proper spacing */}
             <div className="isolate ml-4 mr-8">
-              {" "}
-              {/* Added ml-4 mr-8 */}
               <UserMenu />
             </div>
           </div>
         </div>
 
-        {/* Mobile & Tablet Menu Dropdown */}
+        {/* Mobile Menu Dropdown */}
         <div
           id="mobile-menu"
-          className={`lg:hidden fixed top-20 right-0 w-[280px] bg-black border-l border-t border-white/20 transition-all duration-300 ${isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
-            }`}
+          className={`lg:hidden fixed top-20 right-0 w-[280px] bg-black border-l border-t border-white/20 transition-all duration-300 ${
+            isOpen ? "translate-x-0 opacity-100 pointer-events-auto" : "translate-x-full opacity-0 pointer-events-none"
+          }`}
           style={{
             maxHeight: "calc(100vh - 5rem)",
             overflowY: "auto",
@@ -158,18 +170,18 @@ export function Navigation() {
           {/* Navigation Items */}
           <div className="py-4">
             {navItems.map((item, index) => (
-              <>
+              <React.Fragment key={item.path}>
                 <Link
-                  key={item.path}
                   to={item.path}
-                  className={`block text-white text-xl font-bold px-6 py-4 hover:bg-white/10 ${location.pathname === item.path ? "bg-white/10 border-l-4 border-red-600" : ""
-                    }`}
+                  className={`block text-white text-xl font-bold px-6 py-4 hover:bg-white/10 ${
+                    location.pathname === item.path ? "bg-white/10 border-l-4 border-red-600" : ""
+                  }`}
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
                 </Link>
                 {index < navItems.length - 1 && <div className="h-[1px] bg-white/20 w-full" />}
-              </>
+              </React.Fragment>
             ))}
           </div>
 
@@ -207,4 +219,3 @@ export function Navigation() {
     </nav>
   )
 }
-

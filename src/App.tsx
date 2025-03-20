@@ -33,7 +33,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <div className="bg-black min-h-screen">
+      <div className="relative bg-black min-h-screen max-w-[100vw] overflow-x-hidden">
         <ScrollToTop />
         <Navigation />
         <Outlet />

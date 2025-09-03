@@ -31,17 +31,19 @@ export function PhysicalMusic() {
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-4 mb-12">
           <Music2 size={40} className="text-red-600" />
-          <h2 className="text-5xl font-black">DIGITAL RELEASES</h2>
+          <h2 className="text-5xl font-black" data-editable data-name="digital-releases-title">DIGITAL RELEASES</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {streamingMusic.map((item) => (
+          {streamingMusic.map((item, index) => (
             <div key={item.title} className="bg-zinc-900 rounded-xl overflow-hidden group">
               <div className="aspect-square overflow-hidden relative">
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover transition group-hover:scale-105"
+                  data-editable
+                  data-name={`digital-album-image-${index}`}
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <button className="bg-red-600 p-6 rounded-full transform scale-75 group-hover:scale-100 transition-transform">
@@ -51,8 +53,8 @@ export function PhysicalMusic() {
               </div>
               <div className="p-6">
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold mb-1">{item.title}</h3>
-                  <p className="text-red-500 font-medium">{item.format}</p>
+                  <h3 className="text-xl font-bold mb-1" data-editable data-name={`digital-album-title-${index}`}>{item.title}</h3>
+                  <p className="text-red-500 font-medium" data-editable data-name={`digital-album-format-${index}`}>{item.format}</p>
                 </div>
                 <ul className="space-y-2 mb-6">
                   {item.features.map((feature, index) => (
@@ -79,9 +81,10 @@ export function PhysicalMusic() {
         </div>
 
         <div className="text-center mt-12">
-          <Link 
+          <Link
             to="/store/all-digital-releases"
             className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold inline-flex items-center gap-2 transition"
+            data-editable data-name="digital-releases-cta"
           >
             Explore All Digital Releases
             <Play size={20} />

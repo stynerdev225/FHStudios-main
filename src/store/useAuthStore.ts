@@ -1,10 +1,18 @@
 import { create } from 'zustand';
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role?: string;
+  [key: string]: unknown;
+}
+
 interface AuthState {
   isAuthenticated: boolean;
   isSubscribed: boolean;
-  user: any | null;
-  setAuth: (isAuthenticated: boolean, user: any) => void;
+  user: User | null;
+  setAuth: (isAuthenticated: boolean, user: User) => void;
   setSubscription: (isSubscribed: boolean) => void;
   logout: () => void;
 }

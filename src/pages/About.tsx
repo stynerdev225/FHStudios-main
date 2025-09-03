@@ -6,7 +6,7 @@ import { ArrowRight, Music2 } from 'lucide-react';
 
 export function About() {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  
+
   const authenticityMessages = [
     "Staying true to our roots while embracing innovation",
     "Creating authentic music that speaks from the heart",
@@ -30,13 +30,13 @@ export function About() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentMessageIndex((prev) => 
+      setCurrentMessageIndex((prev) =>
         prev === authenticityMessages.length - 1 ? 0 : prev + 1
       );
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [authenticityMessages.length]);
 
   const achievements = [
     {
@@ -65,7 +65,7 @@ export function About() {
     <div>
       {/* Hero Title Section */}
       <div className="relative py-32">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: 'url("https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=2400&q=80")'
@@ -73,20 +73,20 @@ export function About() {
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
         </div>
-        
+
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl">
-            <span className="text-red-600 uppercase tracking-widest text-lg font-bold mb-6 block">
+            <span className="text-red-600 uppercase tracking-widest text-lg font-bold mb-6 block" data-editable data-name="about-hero-subtitle">
               The Story Behind The Music
             </span>
-            <h1 className="text-7xl md:text-9xl font-black mb-8 tracking-tighter">
-              About <br/>
+            <h1 className="text-7xl md:text-9xl font-black mb-8 tracking-tighter" data-editable data-name="about-hero-title">
+              About <br />
               <span className="text-red-600">Francisco</span>
             </h1>
             <div className="h-1 w-32 bg-red-600 mb-8"></div>
-            <p className="text-2xl md:text-3xl text-zinc-300 font-light leading-relaxed">
-              From street performances to sold-out arenas, every step of this journey 
-              has been fueled by passion, authenticity, and the unwavering support 
+            <p className="text-2xl md:text-3xl text-zinc-300 font-light leading-relaxed" data-editable data-name="about-hero-desc">
+              From street performances to sold-out arenas, every step of this journey
+              has been fueled by passion, authenticity, and the unwavering support
               of our incredible community.
             </p>
           </div>
@@ -103,7 +103,7 @@ export function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative">
               <div className="aspect-[3/4] rounded-3xl overflow-hidden relative z-10">
-                <img 
+                <img
                   src="https://pub-e51e6a830d3346cea7ea8a85a6b8d942.r2.dev/1.Tio.png"
                   alt="Francisco Herrera Story"
                   className="w-full h-full object-cover"
@@ -132,14 +132,14 @@ export function About() {
                 </h3>
               </div>
               <div className="space-y-6">
-                <p className="text-xl md:text-2xl !leading-relaxed text-gray-300">
-                  Francisco Herrera is a musician, composer, and social justice activist whose musical journey 
-                  spans over three decades. Born into a family of musicians in Mexico, Francisco's early exposure 
+                <p className="text-xl md:text-2xl !leading-relaxed text-gray-300" data-editable data-name="about-bio-para1">
+                  Francisco Herrera is a musician, composer, and social justice activist whose musical journey
+                  spans over three decades. Born into a family of musicians in Mexico, Francisco's early exposure
                   to traditional mariachi music laid the foundation for his unique artistic expression.
                 </p>
-                <p className="text-xl md:text-2xl !leading-relaxed text-gray-300">
-                  Through his music, Francisco has become a voice for social change, using his platform to advocate 
-                  for justice, equality, and human dignity. His compositions blend traditional Latin American rhythms 
+                <p className="text-xl md:text-2xl !leading-relaxed text-gray-300" data-editable data-name="about-bio-para2">
+                  Through his music, Francisco has become a voice for social change, using his platform to advocate
+                  for justice, equality, and human dignity. His compositions blend traditional Latin American rhythms
                   with contemporary sounds, creating a musical bridge between cultures and generations.
                 </p>
               </div>
@@ -167,26 +167,26 @@ export function About() {
       <div className="container mx-auto px-4 py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="text-red-600 uppercase tracking-wider text-lg font-bold mb-4 block">
+            <span className="text-red-600 uppercase tracking-wider text-lg font-bold mb-4 block" data-editable data-name="about-mission-subtitle">
               Making a Difference
             </span>
-            <h2 className="text-6xl md:text-8xl font-black mb-12 tracking-tight">
+            <h2 className="text-6xl md:text-8xl font-black mb-12 tracking-tight" data-editable data-name="about-mission-title">
               Our <span className="text-red-600">Mission</span>
             </h2>
             <div className="space-y-12">
-              <p className="text-xl md:text-2xl !leading-relaxed">
-                Through music, we aim to create spaces of healing, unity, and social transformation. 
-                Our mission extends beyond entertainment to embrace education, community building, 
+              <p className="text-xl md:text-2xl !leading-relaxed" data-editable data-name="about-mission-para1">
+                Through music, we aim to create spaces of healing, unity, and social transformation.
+                Our mission extends beyond entertainment to embrace education, community building,
                 and the preservation of cultural heritage.
               </p>
-              <p className="text-xl md:text-2xl !leading-relaxed">
-                We believe in the power of music to bridge divides, inspire change, and create 
+              <p className="text-xl md:text-2xl !leading-relaxed" data-editable data-name="about-mission-para2">
+                We believe in the power of music to bridge divides, inspire change, and create
                 meaningful connections across cultures and generations.
               </p>
             </div>
           </div>
           <div className="aspect-square rounded-3xl overflow-hidden">
-            <img 
+            <img
               src="https://pub-e51e6a830d3346cea7ea8a85a6b8d942.r2.dev/OurMission.png"
               alt="Our Mission"
               className="w-full h-full object-cover object-[center_15%]"
@@ -242,34 +242,34 @@ export function About() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-6xl md:text-8xl font-black mb-6 tracking-tight">
-                Join The <span className="text-red-600">Journey</span> of <br/>
+              <h2 className="text-6xl md:text-8xl font-black mb-6 tracking-tight" data-editable data-name="about-join-title">
+                Join The <span className="text-red-600">Journey</span> of <br />
                 <span className="text-red-600">Musical</span> Revolution
               </h2>
-              <span className="text-red-600 uppercase tracking-wider text-lg font-bold mb-8 block">
+              <span className="text-red-600 uppercase tracking-wider text-lg font-bold mb-8 block" data-editable data-name="about-join-subtitle">
                 Where Every Note Tells a Story of Change
               </span>
               <div className="space-y-8">
-                <p className="text-xl md:text-2xl !leading-relaxed text-zinc-700">
-                  Every performance ignites a spark. Every note tells a story. Every moment creates 
-                  a connection that transcends boundaries, bringing us together in the universal 
+                <p className="text-xl md:text-2xl !leading-relaxed text-zinc-700" data-editable data-name="about-join-para1">
+                  Every performance ignites a spark. Every note tells a story. Every moment creates
+                  a connection that transcends boundaries, bringing us together in the universal
                   language of music.
                 </p>
-                <p className="text-xl md:text-2xl !leading-relaxed text-zinc-700">
-                  This isn't just our story – it's yours too. Whether you're a musician sharing 
-                  the stage, a fan singing along, or someone just discovering our sound, you're 
+                <p className="text-xl md:text-2xl !leading-relaxed text-zinc-700" data-editable data-name="about-join-para2">
+                  This isn't just our story – it's yours too. Whether you're a musician sharing
+                  the stage, a fan singing along, or someone just discovering our sound, you're
                   part of this extraordinary musical revolution that continues to grow and inspire.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                  <Link 
-                    to="/tours" 
+                  <Link
+                    to="/tours"
                     className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full text-xl font-bold transition-all duration-300 group shadow-[0_4px_0_rgb(185,28,28)] hover:shadow-[0_2px_0_rgb(185,28,28)] hover:translate-y-[2px] active:translate-y-[4px] active:shadow-none"
                   >
                     Join Us On Tour
                     <ArrowRight className="group-hover:translate-x-1 transition-transform" />
                   </Link>
-                  <Link 
-                    to="/contact" 
+                  <Link
+                    to="/contact"
                     className="inline-flex items-center gap-2 bg-transparent border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-8 py-4 rounded-full text-xl font-bold transition-all duration-300 group shadow-[0_4px_0_rgb(185,28,28)] hover:shadow-[0_2px_0_rgb(185,28,28)] hover:translate-y-[2px] active:translate-y-[4px] active:shadow-none"
                   >
                     Collaborations & Bookings
@@ -280,7 +280,7 @@ export function About() {
             </div>
             <div className="relative">
               <div className="aspect-square rounded-3xl overflow-hidden">
-                <img 
+                <img
                   src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=2400&q=80"
                   alt="Live Performance"
                   className="w-full h-full object-cover"

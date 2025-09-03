@@ -18,26 +18,26 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {/* Contact Us Section */}
           <div>
-            <h3 className="text-2xl font-black mb-6">CONTACT US</h3>
+            <h3 className="text-2xl font-black mb-6" data-editable data-name="footer-contact-heading">CONTACT US</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <Home className="text-gray-400" size={20} />
-                <span>Canticle Farm, Oakland CA 94601</span>
+                <span data-editable data-name="footer-address">Canticle Farm, Oakland CA 94601</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="text-gray-400" size={20} />
-                <span>+1 (415) 812-9362</span>
+                <span data-editable data-name="footer-phone">+1 (415) 812-9362</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="text-gray-400" size={20} />
-                <span>Miranomas@franciscoherreramusic.com</span>
+                <span data-editable data-name="footer-email">Miranomas@franciscoherreramusic.com</span>
               </div>
             </div>
           </div>
 
           {/* Helpful Links Section */}
           <div>
-            <h3 className="text-2xl font-black mb-6">HELPFUL LINKS</h3>
+            <h3 className="text-2xl font-black mb-6" data-editable data-name="footer-links-heading">HELPFUL LINKS</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-3">
                 <Link to="/" className="block hover:text-red-500 transition">HOME</Link>
@@ -61,8 +61,8 @@ export function Footer() {
 
           {/* Subscribe Newsletter Section */}
           <div>
-            <h3 className="text-2xl font-black mb-6">SUBSCRIBE NEWSLETTER</h3>
-            <p className="text-gray-400 mb-4">
+            <h3 className="text-2xl font-black mb-6" data-editable data-name="footer-newsletter-heading">SUBSCRIBE NEWSLETTER</h3>
+            <p className="text-gray-400 mb-4" data-editable data-name="footer-newsletter-text">
               Never Miss a Beat: Subscribe for Exclusive News, Updates, and Special Offers
             </p>
             <form onSubmit={handleSubscribe} className="flex gap-2">
@@ -74,7 +74,7 @@ export function Footer() {
                 required
                 className="flex-1 bg-zinc-800 rounded-full px-6 py-3 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
-              <button 
+              <button
                 type="submit"
                 className="bg-red-600 hover:bg-red-700 rounded-full p-3 transition"
               >
@@ -86,19 +86,19 @@ export function Footer() {
 
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-zinc-800">
-          <div className="text-6xl font-black tracking-tighter mb-6 md:mb-0 flex items-baseline">
+          <div className="text-6xl font-black tracking-tighter mb-6 md:mb-0 flex items-baseline" data-editable data-name="footer-logo">
             <span className="text-red-600">FH</span>
             <span className="text-4xl font-black tracking-widest ml-1">STUDIOS</span>
           </div>
           <div className="text-sm text-gray-400 flex flex-col md:flex-row items-center gap-4">
-            <span>Copyright © 2024 Francisco Herrera Studios</span>
+            <span data-editable data-name="footer-copyright">Copyright © 2024 Francisco Herrera Studios</span>
             <div className="flex items-center gap-4">
               <span>|</span>
               <Link to="/terms" className="hover:text-white transition">Terms & Conditions</Link>
               <span>|</span>
               <Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link>
               <span>|</span>
-              <span>All Rights Reserved</span>
+              <span data-editable data-name="footer-rights">All Rights Reserved</span>
             </div>
           </div>
         </div>

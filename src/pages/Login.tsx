@@ -1,24 +1,30 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
-import { Mail } from 'lucide-react';
 
 export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuthStore();
-  const from = (location.state as any)?.from?.pathname || '/';
+
+  interface LocationState {
+    from?: {
+      pathname: string;
+    };
+  }
+
+  const from = (location.state as LocationState)?.from?.pathname || '/';
 
   const handleGoogleLogin = () => {
     // Simulate Google login
-    setAuth(true, { name: 'John Doe', email: 'john@example.com' });
+    setAuth(true, { id: 'google-123', name: 'John Doe', email: 'john@example.com' });
     navigate(from, { replace: true });
   };
 
   const handleEmailLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Implement email login logic here
-    setAuth(true, { name: 'John Doe', email: 'john@example.com' });
+    setAuth(true, { id: 'email-123', name: 'John Doe', email: 'john@example.com' });
     navigate(from, { replace: true });
   };
 
@@ -27,7 +33,7 @@ export function Login() {
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto">
           <h1 className="text-4xl font-black mb-8 text-center">Sign In</h1>
-          
+
           <button
             onClick={handleGoogleLogin}
             className="w-full bg-white text-black font-bold py-3 px-4 rounded-lg mb-6 flex items-center justify-center gap-2 hover:bg-gray-100 transition"

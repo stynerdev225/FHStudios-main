@@ -34,14 +34,14 @@ export function VintageRecords() {
             <div className="text-red-600">
               <Disc size={80} />
             </div>
-            <h2 className="text-7xl font-black text-white">VINTAGE COLLECTION</h2>
+            <h2 className="text-7xl font-black text-white" data-editable data-name="vintage-title">VINTAGE COLLECTION</h2>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {vintageRecords.map((record) => (
+          {vintageRecords.map((record, index) => (
             <div key={record.title} className="group">
-              <div className="aspect-square rounded-full overflow-hidden mb-8 transform rotate-0 group-hover:rotate-180 transition-transform duration-1000">
+              <div className="aspect-square rounded-full overflow-hidden mb-8 transform rotate-0 group-hover:rotate-180 transition-transform duration-1000" data-editable data-name={`vintage-record-image-${index}`}>
                 <img
                   src={record.image}
                   alt={record.title}
@@ -49,12 +49,12 @@ export function VintageRecords() {
                 />
               </div>
               <div className="text-center">
-                <h3 className="text-2xl font-bold text-white mb-2">{record.title}</h3>
-                <p className="text-gray-400 mb-1">{record.artist}</p>
+                <h3 className="text-2xl font-bold text-white mb-2" data-editable data-name={`vintage-record-title-${index}`}>{record.title}</h3>
+                <p className="text-gray-400 mb-1" data-editable data-name={`vintage-record-artist-${index}`}>{record.artist}</p>
                 <div className="flex items-center justify-center gap-4">
-                  <span className="text-red-600 font-bold">{record.year}</span>
+                  <span className="text-red-600 font-bold" data-editable data-name={`vintage-record-year-${index}`}>{record.year}</span>
                   <span className="w-2 h-2 bg-red-600 rounded-full"></span>
-                  <span className="text-red-600 font-bold">{record.type}</span>
+                  <span className="text-red-600 font-bold" data-editable data-name={`vintage-record-type-${index}`}>{record.type}</span>
                 </div>
               </div>
             </div>
@@ -62,9 +62,10 @@ export function VintageRecords() {
         </div>
 
         <div className="text-center mt-12">
-          <Link 
+          <Link
             to="/store/all-classics"
             className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold inline-flex items-center gap-2 transition"
+            data-editable data-name="vintage-cta"
           >
             Explore All Classics
             <Play size={20} />

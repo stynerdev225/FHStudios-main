@@ -60,7 +60,7 @@ export function Testimonials() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
+      setCurrentIndex((prevIndex) =>
         prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000); // Rotate every 5 seconds
@@ -72,8 +72,8 @@ export function Testimonials() {
     <div className="py-32 bg-zinc-100">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-7xl font-black text-black mb-4">TESTIMONIALS</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <h2 className="text-7xl font-black text-black mb-4" data-editable data-name="testimonials-title">TESTIMONIALS</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto" data-editable data-name="testimonials-subtitle">
             Hear what fans and critics are saying about Francisco Herrera—genuine experiences that
             showcase the impact of his music on listeners.
           </p>
@@ -83,7 +83,7 @@ export function Testimonials() {
           {/* Featured Rotating Testimonial */}
           <div className="bg-white rounded-3xl p-12 shadow-xl overflow-hidden">
             <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="w-32 h-32 rounded-full overflow-hidden flex-shrink-0">
+              <div className="w-32 h-32 rounded-full overflow-hidden flex-shrink-0" data-editable data-name={`testimonial-image-${currentIndex}`}>
                 <img
                   src={testimonials[currentIndex].image}
                   alt={testimonials[currentIndex].author}
@@ -92,14 +92,14 @@ export function Testimonials() {
               </div>
               <div className="flex-1">
                 <Quote className="text-red-600 w-16 h-16 mb-6" />
-                <p className="text-3xl font-bold text-black mb-6 transition-opacity duration-500">
+                <p className="text-3xl font-bold text-black mb-6 transition-opacity duration-500" data-editable data-name={`testimonial-quote-${currentIndex}`}>
                   {testimonials[currentIndex].quote}
                 </p>
                 <div>
-                  <p className="text-xl font-bold text-black transition-opacity duration-500">
+                  <p className="text-xl font-bold text-black transition-opacity duration-500" data-editable data-name={`testimonial-author-${currentIndex}`}>
                     {testimonials[currentIndex].author}
                   </p>
-                  <p className="text-gray-600 transition-opacity duration-500">
+                  <p className="text-gray-600 transition-opacity duration-500" data-editable data-name={`testimonial-title-${currentIndex}`}>
                     {testimonials[currentIndex].title}
                   </p>
                 </div>
@@ -113,9 +113,8 @@ export function Testimonials() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  currentIndex === index ? 'bg-red-600 w-8' : 'bg-gray-300'
-                }`}
+                className={`w-2 h-2 rounded-full transition-all ${currentIndex === index ? 'bg-red-600 w-8' : 'bg-gray-300'
+                  }`}
                 aria-label={`Show testimonial ${index + 1}`}
               />
             ))}
@@ -123,19 +122,19 @@ export function Testimonials() {
 
           {/* Other Testimonials */}
           <div className="grid md:grid-cols-4 gap-6">
-            {otherTestimonials.map((testimonial) => (
+            {otherTestimonials.map((testimonial, index) => (
               <div
                 key={testimonial.name}
                 className="bg-white rounded-2xl p-6 hover:shadow-lg transition cursor-pointer"
               >
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-xl text-black">{testimonial.name}</h3>
+                  <h3 className="font-bold text-xl text-black" data-editable data-name={`other-testimonial-name-${index}`}>{testimonial.name}</h3>
                   <Quote className="text-red-600 w-6 h-6" />
                 </div>
-                <p className="text-gray-700 mb-4">{testimonial.quote}</p>
+                <p className="text-gray-700 mb-4" data-editable data-name={`other-testimonial-quote-${index}`}>{testimonial.quote}</p>
                 <div>
-                  <p className="font-medium text-black">{testimonial.author}</p>
-                  <p className="text-sm text-gray-600">{testimonial.title}</p>
+                  <p className="font-medium text-black" data-editable data-name={`other-testimonial-author-${index}`}>{testimonial.author}</p>
+                  <p className="text-sm text-gray-600" data-editable data-name={`other-testimonial-title-${index}`}>{testimonial.title}</p>
                 </div>
               </div>
             ))}

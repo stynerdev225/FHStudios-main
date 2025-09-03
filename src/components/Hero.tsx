@@ -1,17 +1,7 @@
 
-// Removed useRef and useState since only one video is needed
-import React from 'react';
-
+// Hero component with editable content
 export function Hero() {
-  // Minimal ContentTools initialization
-  React.useEffect(() => {
-    // ContentTools is loaded globally via CDN
-    const ContentTools = window.ContentTools;
-    if (ContentTools) {
-      ContentTools.EditorApp.get().init('*[data-editable]', 'data-name');
-      ContentTools.EditorApp.get().init('*[data-editable]', 'data-name');
-    }
-  }, []);
+  // ContentTools is now initialized by the boot script in index.html
 
   return (
     <div className="relative h-[85vh] md:min-h-screen">

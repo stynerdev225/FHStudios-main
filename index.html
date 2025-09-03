@@ -22,6 +22,31 @@
     <!-- ContentTools CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.js"></script>
+    
+    <!-- Edit mode boot script -->
+    <script>
+    (function () {
+      const u = new URL(location.href);
+      const inUrl = u.searchParams.get('token');
+      const token = inUrl || localStorage.getItem('editToken');
+      if (inUrl) localStorage.setItem('editToken', inUrl);
+
+      function init() {
+        if (!token || !window.ContentTools) return;
+        const app = window.ContentTools.EditorApp.get();
+        app.init('*[data-editable]', 'data-name');
+
+        // Optional stub "save" (no persistence yet)
+        app.addEventListener('saved', function (ev) {
+          const regions = ev.detail().regions;
+          console.log('Saved content (demo mode, not persisted):', regions);
+          new ContentTools.FlashUI('ok');
+        });
+      }
+      if (document.readyState === 'complete') init();
+      else window.addEventListener('load', init);
+    })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

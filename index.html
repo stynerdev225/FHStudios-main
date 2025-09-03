@@ -141,6 +141,40 @@
         initEditor();
       }
 
+      // --- 1) Fire a custom event on client-side route changes
+      const _pushState = history.pushState;
+      const _replaceState = history.replaceState;
+      function emit() { window.dispatchEvent(new Event('locationchange')); }
+      history.pushState = function() { _pushState.apply(this, arguments); emit(); };
+      history.replaceState = function() { _replaceState.apply(this, arguments); emit(); };
+      window.addEventListener('popstate', emit);
+
+      // --- 2) On route change: retag + sync CT
+      window.addEventListener('locationchange', function () {
+        if (!localStorage.getItem('editToken') || !window.ContentTools) return;
+
+        // Re-tag new page content
+        autoTagEditable();
+
+        // Tell CT about any newly added regions
+        try {
+          const app = ContentTools.EditorApp.get();
+          if (app && app.mount()) app.syncRegions();
+        } catch(_) {}
+      });
+
+      // Optional: also catch large DOM swaps (some routers don't touch history)
+      const mo = new MutationObserver((m) => {
+        if (!localStorage.getItem('editToken') || !window.ContentTools) return;
+        // If a big chunk changed, sync
+        const changed = m.some(x => x.addedNodes && x.addedNodes.length > 0);
+        if (changed) {
+          autoTagEditable();
+          try { ContentTools.EditorApp.get().syncRegions(); } catch(_) {}
+        }
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+
       if (document.readyState === 'complete') boot();
       else window.addEventListener('load', boot);
     })();

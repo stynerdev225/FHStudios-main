@@ -32,6 +32,11 @@ let editor: ContentToolsEditorApp | null = null;
 
 // Initialize ContentTools editor
 export function initContentTools(): void {
+  // DISABLED: We now use the boot script in index.html to avoid multiple initializations
+  console.log('ContentTools initialization from client disabled to avoid conflicts');
+  return;
+
+  /*
   if (!window.ContentTools || editor) {
     return;
   }
@@ -47,6 +52,7 @@ export function initContentTools(): void {
 
     console.log('ContentTools initialized');
   }
+  */
 }
 
 // Handle saved content

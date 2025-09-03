@@ -26,125 +26,146 @@
     <!-- Drop-in "make the whole site editable" snippet -->
     <script>
     (function () {
-      // 1) Token gating + persistence across navigation
       const u = new URL(location.href);
-      const fromUrl = u.searchParams.get('token');
-      const token = fromUrl || localStorage.getItem('editToken');
-      if (fromUrl) localStorage.setItem('editToken', fromUrl);
+      const inUrl = u.searchParams.get('token');
+      const token = inUrl || localStorage.getItem('editToken');
+      if (inUrl) localStorage.setItem('editToken', inUrl);
 
-      // 2) Auto-tag text and images across the page
-      function autoTagEditable() {
-        // Texty elements you want editable everywhere
-        const TEXT_SEL = [
-          'h1','h2','h3','h4','h5','h6',
-          'p','li','blockquote','figcaption','dd','dt',
-          'span' // (only spans with meaningful text will be kept)
-        ].join(',');
-
-        const page = (location.pathname || '/').replace(/\W+/g, '_') || 'root';
-        let idx = 0;
-
-        // TEXT: add data-editable/data-name where it makes sense
-        document.querySelectorAll(TEXT_SEL).forEach(el => {
-          // Skip if already tagged
-          if (el.hasAttribute('data-editable')) return;
-
-          // Only spans with visible text
-          const txt = (el.textContent || '').trim();
-          const looksTextual = el.tagName !== 'SPAN' ? true : txt.length > 0;
-
-          // Avoid obviously interactive or script-y things
-          const isInteractive = el.closest('a, button, [role="button"], input, textarea, select');
-          const hidden = getComputedStyle(el).display === 'none' || getComputedStyle(el).visibility === 'hidden';
-
-          if (looksTextual && !isInteractive && !hidden) {
-            el.setAttribute('data-editable', '');
-            el.setAttribute('data-name', `${page}__${el.tagName.toLowerCase()}__${idx++}`);
-          }
-        });
-
-        // IMAGES: tag images so the image tool can act on them
-        document.querySelectorAll('img').forEach((img, i) => {
-          if (!img.hasAttribute('data-editable')) {
-            img.setAttribute('data-editable', '');
-            img.setAttribute('data-name', `${page}__img__${i}`);
-            // Ensure clicks reach the image (common overlay gotcha)
-            const s = getComputedStyle(img);
-            if (s.pointerEvents === 'none') img.style.pointerEvents = 'auto';
-          }
-        });
-      }
-
-      // 3) Minimal image "uploader" that accepts a URL (no backend yet)
-      function installUrlImageUploader() {
-        if (!window.ContentTools) return;
-        ContentTools.IMAGE_UPLOADER = function (dialog) {
-          // When user clicks the "insert" or "change" image button,
-          // ask for a URL and update the preview; no server roundtrip.
-          dialog.bind('imageuploader.fileready', function () {
-            // No file handling in demo mode; prompt for URL instead
-            dialog.state('uploading');
-            setTimeout(() => {
-              dialog.state('edit');
-              // Ask for a URL
-              const url = prompt('Paste image URL (public):');
-              if (!url) {
-                dialog.state('cancelled');
-                dialog.trigger('imageuploader.cancelled');
-                return;
-              }
-              // Show the image in the dialog
-              dialog.preview(url);
-              dialog.updateImage(url);
-            }, 50);
-          });
-
-          // Allow user to re-edit URL
-          dialog.bind('imageuploader.edit', function () {
-            const current = dialog.imageURL();
-            const url = prompt('New image URL:', current || '');
-            if (url) dialog.updateImage(url);
-          });
-
-          // Remove image
-          dialog.bind('imageuploader.clear', function () {
-            dialog.updateImage(null);
-          });
-
-          // Just close on cancel
-          dialog.bind('imageuploader.cancelupload', function () {
-            dialog.state('cancelled');
-            dialog.trigger('imageuploader.cancelled');
-          });
-        };
-      }
-
-      // 4) Initialize ContentTools editor when token is present
-      function initEditor() {
+      function initCT() {
         if (!token || !window.ContentTools) return;
+        if (window.__CT_INITED) return;          // <-- guard
+        window.__CT_INITED = true;
 
-        autoTagEditable();       // tag the whole document
+        // Auto-tag text and images across the page
+        function autoTagEditable() {
+          // Texty elements you want editable everywhere
+          const TEXT_SEL = [
+            'h1','h2','h3','h4','h5','h6',
+            'p','li','blockquote','figcaption','dd','dt',
+            'span' // (only spans with meaningful text will be kept)
+          ].join(',');
+
+          const page = (location.pathname || '/').replace(/\W+/g, '_') || 'root';
+          let idx = 0;
+
+          // TEXT: add data-editable/data-name where it makes sense
+          document.querySelectorAll(TEXT_SEL).forEach(el => {
+            // Skip if already tagged
+            if (el.hasAttribute('data-editable')) return;
+
+            // Only spans with visible text
+            const txt = (el.textContent || '').trim();
+            const looksTextual = el.tagName !== 'SPAN' ? true : txt.length > 0;
+
+            // Avoid obviously interactive or script-y things
+            const isInteractive = el.closest('a, button, [role="button"], input, textarea, select');
+            const hidden = getComputedStyle(el).display === 'none' || getComputedStyle(el).visibility === 'hidden';
+
+            if (looksTextual && !isInteractive && !hidden) {
+              el.setAttribute('data-editable', '');
+              el.setAttribute('data-name', `${page}__${el.tagName.toLowerCase()}__${idx++}`);
+            }
+          });
+
+          // IMAGES: tag images so the image tool can act on them
+          document.querySelectorAll('img').forEach((img, i) => {
+            if (!img.hasAttribute('data-editable')) {
+              img.setAttribute('data-editable', '');
+              img.setAttribute('data-name', `${page}__img__${i}`);
+              // Ensure clicks reach the image (common overlay gotcha)
+              const s = getComputedStyle(img);
+              if (s.pointerEvents === 'none') img.style.pointerEvents = 'auto';
+            }
+          });
+        }
+
+        // Minimal image "uploader" that accepts a URL (no backend yet)
+        function installUrlImageUploader() {
+          if (!window.ContentTools) return;
+          ContentTools.IMAGE_UPLOADER = function (dialog) {
+            // When user clicks the "insert" or "change" image button,
+            // ask for a URL and update the preview; no server roundtrip.
+            dialog.bind('imageuploader.fileready', function () {
+              // No file handling in demo mode; prompt for URL instead
+              dialog.state('uploading');
+              setTimeout(() => {
+                dialog.state('edit');
+                // Ask for a URL
+                const url = prompt('Paste image URL (public):');
+                if (!url) {
+                  dialog.state('cancelled');
+                  dialog.trigger('imageuploader.cancelled');
+                  return;
+                }
+                // Show the image in the dialog
+                dialog.preview(url);
+                dialog.updateImage(url);
+              }, 50);
+            });
+
+            // Allow user to re-edit URL
+            dialog.bind('imageuploader.edit', function () {
+              const current = dialog.imageURL();
+              const url = prompt('New image URL:', current || '');
+              if (url) dialog.updateImage(url);
+            });
+
+            // Remove image
+            dialog.bind('imageuploader.clear', function () {
+              dialog.updateImage(null);
+            });
+
+            // Just close on cancel
+            dialog.bind('imageuploader.cancelupload', function () {
+              dialog.state('cancelled');
+              dialog.trigger('imageuploader.cancelled');
+            });
+          };
+        }
+
+        // Tag the document and initialize
+        autoTagEditable();
         installUrlImageUploader();
 
         const app = ContentTools.EditorApp.get();
         app.init('*[data-editable]', 'data-name');
 
-        // Demo save: log changes (persistence arrives when we hook ICP)
         app.bind('saved', function (regions) {
-          console.log('Saved (demo, not persisted):', regions);
+          console.log('Saved (demo mode):', regions);
         });
       }
 
-      function boot() {
-        if (!token) return;
-        if (!window.ContentTools) return; // library must be included via CDN
-        initEditor();
-      }
+      // Re-sync on SPA route changes
+      const ps = history.pushState, rs = history.replaceState;
+      const emit = () => window.dispatchEvent(new Event('locationchange'));
+      history.pushState = function(){ ps.apply(this, arguments); emit(); };
+      history.replaceState = function(){ rs.apply(this, arguments); emit(); };
+      window.addEventListener('popstate', emit);
 
-      if (document.readyState === 'complete') boot();
-      else window.addEventListener('load', boot);
+      window.addEventListener('locationchange', () => {
+        if (!localStorage.getItem('editToken') || !window.ContentTools) return;
+        try { 
+          // Re-tag elements on page change
+          const app = ContentTools.EditorApp.get();
+          if (app) {
+            if (typeof autoTagEditable === 'function') autoTagEditable();
+            app.syncRegions(); 
+            console.log('ContentTools regions synced after route change');
+          }
+        } catch (err) {
+          console.error('Error syncing ContentTools regions:', err);
+        }
+      });
+
+      if (document.readyState === 'complete') initCT();
+      else window.addEventListener('load', initCT);
     })();
     </script>
+    
+    <!-- Unblock typing with CSS -->
+    <style>
+      [data-editable] { pointer-events: auto !important; user-select: text !important; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

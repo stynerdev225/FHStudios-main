@@ -19,188 +19,99 @@
     <meta name="twitter:title" content="Francisco Herrera Music | Official Website" />
     <meta name="twitter:description" content="Official website of Francisco Herrera - Hip-hop artist and musician. Listen to the latest tracks, watch videos, and stay updated with tour dates." />
     <meta name="twitter:image" content="https://pub-e51e6a830d3346cea7ea8a85a6b8d942.r2.dev/FSTUDIOSH.png" />
-    <!-- ContentTools CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.js"></script>
     
-    <!-- Drop-in "make the whole site editable" snippet -->
-    <script>
-    (function () {
-      // 1) Token gating + persistence across navigation
-      const u = new URL(location.href);
-      const fromUrl = u.searchParams.get('token');
-      const token = fromUrl || localStorage.getItem('editToken');
-      if (fromUrl) localStorage.setItem('editToken', fromUrl);
-
-      // 2) Auto-tag text and images across the page
-      function autoTagEditable() {
-        // Texty elements you want editable everywhere
-        const TEXT_SEL = [
-          'h1','h2','h3','h4','h5','h6',
-          'p','li','blockquote','figcaption','dd','dt',
-          'span' // (only spans with meaningful text will be kept)
-        ].join(',');
-
-        const page = (location.pathname || '/').replace(/\W+/g, '_') || 'root';
-        let idx = 0;
-
-        // TEXT: add data-editable/data-name where it makes sense
-        document.querySelectorAll(TEXT_SEL).forEach(el => {
-          // Skip if already tagged
-          if (el.hasAttribute('data-editable')) return;
-
-          // Only spans with visible text
-          const txt = (el.textContent || '').trim();
-          const looksTextual = el.tagName !== 'SPAN' ? true : txt.length > 0;
-
-          // Avoid obviously interactive or script-y things
-          const isInteractive = el.closest('a, button, [role="button"], input, textarea, select');
-          const hidden = getComputedStyle(el).display === 'none' || getComputedStyle(el).visibility === 'hidden';
-
-          if (looksTextual && !isInteractive && !hidden) {
-            el.setAttribute('data-editable', '');
-            el.setAttribute('data-name', `${page}__${el.tagName.toLowerCase()}__${idx++}`);
-          }
-        });
-
-        // IMAGES: tag images so the image tool can act on them
-        document.querySelectorAll('img').forEach((img, i) => {
-          if (!img.hasAttribute('data-editable')) {
-            img.setAttribute('data-editable', '');
-            img.setAttribute('data-name', `${page}__img__${i}`);
-            // Ensure clicks reach the image (common overlay gotcha)
-            const s = getComputedStyle(img);
-            if (s.pointerEvents === 'none') img.style.pointerEvents = 'auto';
-          }
-        });
-      }
-
-      // 3) Minimal image "uploader" that accepts a URL (no backend yet)
-      function installUrlImageUploader() {
-        if (!window.ContentTools) return;
-        ContentTools.IMAGE_UPLOADER = function (dialog) {
-          // When user clicks the "insert" or "change" image button,
-          // ask for a URL and update the preview; no server roundtrip.
-          dialog.bind('imageuploader.fileready', function () {
-            // No file handling in demo mode; prompt for URL instead
-            dialog.state('uploading');
-            setTimeout(() => {
-              dialog.state('edit');
-              // Ask for a URL
-              const url = prompt('Paste image URL (public):');
-              if (!url) {
-                dialog.state('cancelled');
-                dialog.trigger('imageuploader.cancelled');
-                return;
-              }
-              // Show the image in the dialog
-              dialog.preview(url);
-              dialog.updateImage(url);
-            }, 50);
-          });
-
-          // Allow user to re-edit URL
-          dialog.bind('imageuploader.edit', function () {
-            const current = dialog.imageURL();
-            const url = prompt('New image URL:', current || '');
-            if (url) dialog.updateImage(url);
-          });
-
-          // Remove image
-          dialog.bind('imageuploader.clear', function () {
-            dialog.updateImage(null);
-          });
-
-          // Just close on cancel
-          dialog.bind('imageuploader.cancelupload', function () {
-            dialog.state('cancelled');
-            dialog.trigger('imageuploader.cancelled');
-          });
-        };
-      }
-
-      // 4) Initialize ContentTools editor when token is present
-      function initEditor() {
-        if (!token || !window.ContentTools) return;
-
-        autoTagEditable();       // tag the whole document
-        installUrlImageUploader();
-
-        const app = ContentTools.EditorApp.get();
-        app.init('*[data-editable]', 'data-name');
-
-        // Demo save: log changes (persistence arrives when we hook ICP)
-        app.bind('saved', function (regions) {
-          console.log('Saved (demo, not persisted):', regions);
-        });
-      }
-
-      function boot() {
-        console.log('Boot function called, token:', !!token);
-        if (!token) {
-          console.log('No edit token found. Add ?token=abc to URL to enable editing.');
-          return;
-        }
-        
-        console.log('ContentTools library check:', !!window.ContentTools);
-        if (!window.ContentTools) {
-          console.error('ContentTools library not loaded! Check network tab for loading errors.');
-          return;
-        }
-        
-        console.log('Initializing editor...');
-        initEditor();
-      }
-
-      // --- 1) Fire a custom event on client-side route changes
-      const _pushState = history.pushState;
-      const _replaceState = history.replaceState;
-      function emit() { window.dispatchEvent(new Event('locationchange')); }
-      history.pushState = function() { _pushState.apply(this, arguments); emit(); };
-      history.replaceState = function() { _replaceState.apply(this, arguments); emit(); };
-      window.addEventListener('popstate', emit);
-
-      // --- 2) On route change: retag + sync CT
-      window.addEventListener('locationchange', function () {
-        if (!localStorage.getItem('editToken') || !window.ContentTools) return;
-
-        // Re-tag new page content
-        autoTagEditable();
-
-        // Tell CT about any newly added regions
-        try {
-          const app = ContentTools.EditorApp.get();
-          if (app && app.mount()) app.syncRegions();
-        } catch(_) {}
-      });
-
-      // Optional: also catch large DOM swaps (some routers don't touch history)
-      const mo = new MutationObserver((m) => {
-        const storedToken = localStorage.getItem('editToken');
-        if (!storedToken || !window.ContentTools) return;
-        // If a big chunk changed, sync
-        const changed = m.some(x => x.addedNodes && x.addedNodes.length > 0);
-        if (changed) {
-          console.log('DOM change detected, re-tagging editable elements');
-          autoTagEditable();
-          try { 
-            const app = ContentTools.EditorApp.get();
-            app.syncRegions(); 
-            console.log('ContentTools regions synced after DOM change');
-          } catch(err) {
-            console.error('Error syncing ContentTools regions:', err);
-          }
-        }
-      });
-      mo.observe(document.body, { childList: true, subtree: true });
-
-      if (document.readyState === 'complete') boot();
-      else window.addEventListener('load', boot);
-    })();
-    </script>
+    <!-- ContentTools CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/contenttools@1.6.12/build/content-tools.min.css">
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- ContentTools JS (at the end of body for better performance) -->
+    <script src="https://unpkg.com/contenttools@1.6.12/build/content-tools.min.js"></script>
+    
+    <!-- Simple editor initialization -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for edit token
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      
+      if (token) {
+        // Store token in localStorage
+        localStorage.setItem('editToken', token);
+        console.log('Edit token found and stored');
+      }
+      
+      // Initialize editor if we have a token
+      const hasToken = token || localStorage.getItem('editToken');
+      
+      if (hasToken) {
+        console.log('Initializing ContentTools...');
+        
+        // Function to make elements editable
+        function makeEditable() {
+          console.log('Making elements editable...');
+          const selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li'];
+          
+          selectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach((el, i) => {
+              if (!el.closest('a, button') && !el.hasAttribute('data-editable')) {
+                el.setAttribute('data-editable', '');
+                el.setAttribute('data-name', `text-${selector}-${i}`);
+                console.log(`Made editable: ${selector} #${i}`);
+              }
+            });
+          });
+          
+          // Make images editable
+          document.querySelectorAll('img').forEach((img, i) => {
+            if (!img.hasAttribute('data-editable')) {
+              img.setAttribute('data-editable', '');
+              img.setAttribute('data-name', `image-${i}`);
+            }
+          });
+        }
+        
+        // Make elements editable on load and whenever URL changes
+        makeEditable();
+        
+        // Setup URL change detection
+        let lastPathname = location.pathname;
+        setInterval(() => {
+          if (location.pathname !== lastPathname) {
+            lastPathname = location.pathname;
+            console.log('URL changed, updating editable elements');
+            
+            // Wait for React to render the new page
+            setTimeout(makeEditable, 500);
+          }
+        }, 300);
+        
+        // Initialize ContentTools
+        try {
+          if (window.ContentTools) {
+            console.log('ContentTools found, initializing editor');
+            const editor = ContentTools.EditorApp.get();
+            editor.init('*[data-editable]', 'data-name');
+            
+            // Simple save handler (demo mode)
+            editor.addEventListener('saved', function(ev) {
+              const regions = ev.detail().regions;
+              console.log('Content saved (demo mode):', regions);
+            });
+            
+            console.log('ContentTools editor initialized successfully');
+          } else {
+            console.error('ContentTools library not found. Check if it loaded properly.');
+          }
+        } catch (error) {
+          console.error('Error initializing ContentTools:', error);
+        }
+      } else {
+        console.log('No edit token found. Add ?token=abc to the URL to enable editing mode.');
+      }
+    });
+    </script>
   </body>
 </html>

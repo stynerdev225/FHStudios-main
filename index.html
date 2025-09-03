@@ -20,8 +20,8 @@
     <meta name="twitter:description" content="Official website of Francisco Herrera - Hip-hop artist and musician. Listen to the latest tracks, watch videos, and stay updated with tour dates." />
     <meta name="twitter:image" content="https://pub-e51e6a830d3346cea7ea8a85a6b8d942.r2.dev/FSTUDIOSH.png" />
     <!-- ContentTools CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ContentTools/build/content-tools.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/ContentTools/build/content-tools.min.js"></script>
     
     <!-- Edit mode boot script -->
     <script>
@@ -29,20 +29,19 @@
       const u = new URL(location.href);
       const inUrl = u.searchParams.get('token');
       const token = inUrl || localStorage.getItem('editToken');
-      if (inUrl) localStorage.setItem('editToken', inUrl);
+      if (inUrl) localStorage.setItem('editToken', inUrl); // keep edit mode across page changes
 
       function init() {
         if (!token || !window.ContentTools) return;
         const app = window.ContentTools.EditorApp.get();
         app.init('*[data-editable]', 'data-name');
 
-        // Optional stub "save" (no persistence yet)
-        app.addEventListener('saved', function (ev) {
-          const regions = ev.detail().regions;
-          console.log('Saved content (demo mode, not persisted):', regions);
-          new ContentTools.FlashUI('ok');
+        // Demo "save": just logs; no persistence yet
+        app.bind('saved', function (regions) {
+          console.log('Saved (demo mode, not persisted):', regions);
         });
       }
+
       if (document.readyState === 'complete') init();
       else window.addEventListener('load', init);
     })();

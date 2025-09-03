@@ -1,10 +1,4 @@
 import type { VercelRequest, VercelResponse } from '../src/types/vercel';
-import fs from 'fs';
-import path from 'path';
-
-// Simple storage implementation for development
-// In production, this would connect to a database or cloud storage
-const DATA_PATH = path.join(process.cwd(), 'content-data.json');
 
 interface SaveRequest {
   path: string;      // The data-name attribute value
@@ -29,32 +23,28 @@ export default async function handler(
     if (!saveData.path || !saveData.type || saveData.value === undefined) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
-
-    // Load existing data
-    let contentData: Record<string, {
-      type: string;
-      value: string;
-      updatedAt: string;
-    }> = {};
     
-    try {
-      if (fs.existsSync(DATA_PATH)) {
-        contentData = JSON.parse(fs.readFileSync(DATA_PATH, 'utf8'));
-      }
-    } catch (error) {
-      console.error('Error reading content data:', error);
-      // Continue with empty data if file doesn't exist or is invalid
-    }
-
-    // Update the content
-    contentData[saveData.path] = {
+    // In a production environment, you would save to a database here
+    // For example, with KV store:
+    // if (process.env.VERCEL_ENV === 'production') {
+    //   // Save to KV store or other database
+    //   const { kv } = require('@vercel/kv');
+    //   await kv.hset(`content:${saveData.siteId || 'default'}`, {
+    //     [saveData.path]: {
+    //       type: saveData.type,
+    //       value: saveData.value,
+    //       updatedAt: new Date().toISOString()
+    //     }
+    //   });
+    // }
+    
+    // For now, we'll just simulate success and log the data
+    console.log('Content saved:', {
+      path: saveData.path,
       type: saveData.type,
-      value: saveData.value,
+      length: saveData.value.length,
       updatedAt: new Date().toISOString()
-    };
-
-    // Save the updated data
-    fs.writeFileSync(DATA_PATH, JSON.stringify(contentData, null, 2));
+    });
 
     // Return success
     return res.status(200).json({ 

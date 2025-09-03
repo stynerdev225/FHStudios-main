@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 .qodo
 .vercel
+node_modules
+dist
+.next
+.vercel
+.DS_Store

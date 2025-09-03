@@ -20,15 +20,18 @@ Since we're having challenges with automated terminal scripts, here's the simple
 1. **Go to Vercel**: https://vercel.com/dashboard
 
 2. **Create a New Account** if you don't have one:
+
    - Use your GitHub account for easiest setup
    - Or use your email: stynerdev2025@aol.com
 
 3. **Create a New Project**:
+
    - Click "Add New..." → "Project"
    - If prompted to import from Git, choose "Import Third-Party Git Repository" and enter your GitHub repo URL
    - Or use "Upload" to upload your local files
 
 4. **Configure the Project**:
+
    - Project Name: fhstudios
    - Framework Preset: Vite
    - Root Directory: ./
@@ -56,6 +59,7 @@ Since we're having challenges with automated terminal scripts, here's the simple
 ## Need Help?
 
 If you continue to face issues:
+
 - Email Vercel support at support@vercel.com
 - Post a question on their community forum: https://github.com/vercel/vercel/discussions
 - Consult the Vercel documentation: https://vercel.com/docs

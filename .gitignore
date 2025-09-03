@@ -29,3 +29,4 @@ dist
 .next
 .vercel
 .DS_Store
+github-push.sh

@@ -20,8 +20,8 @@
     <meta name="twitter:description" content="Official website of Francisco Herrera - Hip-hop artist and musician. Listen to the latest tracks, watch videos, and stay updated with tour dates." />
     <meta name="twitter:image" content="https://pub-e51e6a830d3346cea7ea8a85a6b8d942.r2.dev/FSTUDIOSH.png" />
     <!-- ContentTools CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ContentTools/build/content-tools.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/ContentTools/build/content-tools.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/contenttools@1.6.21/build/content-tools.min.js"></script>
     
     <!-- Drop-in "make the whole site editable" snippet -->
     <script>
@@ -136,8 +136,19 @@
       }
 
       function boot() {
-        if (!token) return;
-        if (!window.ContentTools) return; // library must be included via CDN
+        console.log('Boot function called, token:', !!token);
+        if (!token) {
+          console.log('No edit token found. Add ?token=abc to URL to enable editing.');
+          return;
+        }
+        
+        console.log('ContentTools library check:', !!window.ContentTools);
+        if (!window.ContentTools) {
+          console.error('ContentTools library not loaded! Check network tab for loading errors.');
+          return;
+        }
+        
+        console.log('Initializing editor...');
         initEditor();
       }
 
@@ -165,12 +176,20 @@
 
       // Optional: also catch large DOM swaps (some routers don't touch history)
       const mo = new MutationObserver((m) => {
-        if (!localStorage.getItem('editToken') || !window.ContentTools) return;
+        const storedToken = localStorage.getItem('editToken');
+        if (!storedToken || !window.ContentTools) return;
         // If a big chunk changed, sync
         const changed = m.some(x => x.addedNodes && x.addedNodes.length > 0);
         if (changed) {
+          console.log('DOM change detected, re-tagging editable elements');
           autoTagEditable();
-          try { ContentTools.EditorApp.get().syncRegions(); } catch(_) {}
+          try { 
+            const app = ContentTools.EditorApp.get();
+            app.syncRegions(); 
+            console.log('ContentTools regions synced after DOM change');
+          } catch(err) {
+            console.error('Error syncing ContentTools regions:', err);
+          }
         }
       });
       mo.observe(document.body, { childList: true, subtree: true });
